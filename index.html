@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 6: A Visit to a School (Full Version)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --orange: #fb8c00;
+            --green: #43a047;
+            --blue: #1e88e5;
+            --bg: #fff3e0;
+            --text: #37474f;
+        }
+
+        * { box-sizing: border-box; }
+        body { font-family: 'Nunito', sans-serif; background: var(--bg); margin: 0; color: var(--text); padding-bottom: 50px;}
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, var(--orange), #ffcc80);
+            padding: 15px 20px; color: white; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;
+        }
+        h1 { margin: 0; font-size: 20px; font-weight: 800; }
+        .music-btn { background: rgba(255,255,255,0.3); border: 2px solid white; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .music-btn.playing { background: white; color: var(--orange); animation: spin 4s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* TABS */
+        .tabs { display: flex; gap: 10px; padding: 15px 20px; overflow-x: auto; background: white; border-bottom: 3px solid var(--orange); }
+        .tab-btn {
+            padding: 10px 20px; border: none; background: #eee; border-radius: 20px; font-weight: 700; color: #777; cursor: pointer; white-space: nowrap; transition: 0.3s;
+        }
+        .tab-btn.active { background: var(--orange); color: white; box-shadow: 0 4px 8px rgba(251, 140, 0, 0.3); }
+
+        /* CONTENT */
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        .tab-content { display: none; animation: slideUp 0.4s ease; }
+        .tab-content.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* SECTIONS */
+        .section-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--orange); }
+        .section-title { font-size: 18px; font-weight: 800; color: var(--orange); margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* DIALOGUE & READING TEXT */
+        .text-content { background: #f9f9f9; padding: 15px; border-radius: 10px; border-left: 4px solid var(--blue); max-height: 400px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        .line { margin-bottom: 12px; }
+        .speaker { font-weight: 800; color: var(--blue); }
+        .vi-text { display: block; color: #666; font-style: italic; font-size: 14px; margin-top: 4px; border-left: 2px solid #ddd; padding-left: 8px; display: none; }
+        .vi-text.show { display: block; animation: fadeIn 0.5s; }
+        .btn-trans { background: var(--blue); color: white; border: none; padding: 5px 12px; border-radius: 15px; font-size: 12px; cursor: pointer; }
+
+        /* QUIZ */
+        .quiz-item { margin-bottom: 20px; border-bottom: 1px dashed #ddd; padding-bottom: 20px; }
+        .question { font-weight: 700; font-size: 17px; margin-bottom: 10px; }
+        .options { display: grid; grid-template-columns: 1fr; gap: 8px; }
+        .opt-btn { text-align: left; background: white; border: 2px solid #eee; padding: 12px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 15px; }
+        .opt-btn:hover:not([disabled]) { border-color: var(--orange); background: #fff8e1; }
+        
+        .opt-btn.correct { background: #e8f5e9; border-color: var(--green); color: #2e7d32; font-weight: bold; }
+        .opt-btn.correct::after { content: " ✓"; }
+        .opt-btn.wrong { background: #ffebee; border-color: #ef5350; color: #c62828; opacity: 0.7; }
+        
+        .explanation { margin-top: 10px; padding: 12px; background: #e3f2fd; color: #0d47a1; border-radius: 6px; font-size: 14px; display: none; }
+        
+        /* MATCHING GAME */
+        .matching-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .match-col { display: flex; flex-direction: column; gap: 10px; }
+        .match-card { background: white; border: 2px solid #ccc; padding: 15px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .match-card.selected { border-color: var(--blue); background: #e3f2fd; transform: scale(1.05); }
+        .match-card.matched { border-color: var(--green); background: #c8e6c9; opacity: 0.5; pointer-events: none; }
+
+        /* FILL IN BLANKS */
+        .fill-item { margin-bottom: 15px; background: #fafafa; padding: 10px; border-radius: 8px; }
+        .blank-select { border: none; border-bottom: 2px solid var(--orange); background: transparent; font-weight: bold; color: var(--orange); font-size: 16px; outline: none; padding: 0 5px; cursor: pointer; }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .matching-grid { grid-template-columns: 1fr; gap: 10px; }
+            .match-col { margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🏫 Unit 6: A Visit to a School</h1>
+    <div class="music-btn" onclick="toggleMusic()">🎵</div>
+</header>
+<audio id="bg-music" loop src="https://www.bensound.com/bensound-music/bensound-sunny.mp3"></audio>
+
+<div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('tab1')">1. Getting Started</button>
+    <button class="tab-btn" onclick="switchTab('tab2')">2. Vocabulary</button>
+    <button class="tab-btn" onclick="switchTab('tab3')">3. Grammar</button>
+    <button class="tab-btn" onclick="switchTab('tab4')">4. Reading</button>
+</div>
+
+<div class="container">
+
+    <div id="tab1" class="tab-content active">
+        <div class="section-card">
+            <div class="section-title">
+                📖 Listen & Read: A Visit to Binh Minh School
+                <button class="btn-trans" onclick="toggleTrans('dialogue')">🇻🇳 Dịch Tiếng Việt</button>
+            </div>
+            <div class="text-content" id="dialogue-box"></div>
+        </div>
+        
+        <div class="section-card">
+            <div class="section-title">❓ Quiz: Read conversation again</div>
+            <div id="quiz-tab1"></div>
+        </div>
+    </div>
+
+    <div id="tab2" class="tab-content">
+        <div class="section-card">
+            <div class="section-title">🔗 Task 1: Matching (Nối từ)</div>
+            <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Chọn 1 ô ở cột trái (A) rồi chọn 1 ô ở cột phải (B) để ghép thành cụm từ đúng.</p>
+            <div class="matching-grid">
+                <div class="match-col" id="col-a"></div>
+                <div class="match-col" id="col-b"></div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">✍️ Task 2: Complete sentences (Điền từ)</div>
+            <div id="fill-vocab"></div>
+        </div>
+    </div>
+
+    <div id="tab3" class="tab-content">
+        <div class="section-card">
+            <div class="section-title">🛠️ Prepositions of Time & Place (at, in, on)</div>
+            <div style="background: #e0f2f1; padding: 10px; border-radius: 8px; font-size: 14px; margin-bottom: 15px;">
+                <strong>Mẹo nhớ:</strong><br>
+                🕒 <b>Time:</b> AT giờ (at 6pm), ON ngày (on Monday), IN tháng/năm/buổi (in May, in 2020, in the morning).<br>
+                📍 <b>Place:</b> AT điểm cụ thể (at school), ON bề mặt (on the wall), IN bên trong (in the classroom).
+            </div>
+            <div id="quiz-grammar"></div>
+        </div>
+    </div>
+
+    <div id="tab4" class="tab-content">
+        <div class="section-card">
+            <div class="section-title">
+                🏫 Reading: QUOC HOC - HUE
+                <button class="btn-trans" onclick="toggleTrans('reading')">🇻🇳 Dịch bài đọc</button>
+            </div>
+            <div class="text-content" id="reading-box"></div>
+        </div>
+        
+        <div class="section-card">
+            <div class="section-title">❓ Answer the questions</div>
+            <div id="quiz-reading"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    /* --- DỮ LIỆU NỘI DUNG (DATA) --- */
+
+    // 1. DATA HỘI THOẠI (FULL IMAGE 1)
+    const dialogue = [
+        { s: "Phong", e: "What are you doing, Mi?", v: "Bạn đang làm gì thế, Mi?" },
+        { s: "Mi", e: "I'm preparing to visit Binh Minh Lower Secondary School.", v: "Mình đang chuẩn bị đi thăm trường THCS Bình Minh." },
+        { s: "Phong", e: "Sounds great! I think that's one of the best schools in my neighbourhood. Who is going with you and when?", v: "Nghe tuyệt đấy! Mình nghĩ đó là một trong những ngôi trường tốt nhất ở khu mình. Ai sẽ đi cùng bạn và khi nào?" },
+        { s: "Mi", e: "My teacher and my classmates. We're going in the afternoon.", v: "Giáo viên và các bạn cùng lớp của mình. Chúng mình sẽ đi vào buổi chiều." },
+        { s: "Phong", e: "I see. What will you do there?", v: "Mình hiểu rồi. Các bạn sẽ làm gì ở đó?" },
+        { s: "Mi", e: "Well, I think we'll visit the school library, the computer room, and the gym. We'll meet the students and share ideas for a project in our English class.", v: "À, mình nghĩ chúng mình sẽ thăm thư viện trường, phòng máy tính, và phòng thể dục. Chúng mình sẽ gặp gỡ học sinh và chia sẻ ý tưởng cho một dự án trong lớp tiếng Anh." },
+        { s: "Phong", e: "That's interesting. What else will you do there?", v: "Thú vị thật. Các bạn sẽ làm gì khác nữa không?" },
+        { s: "Mi", e: "We'll meet the members of their Go Green Club and take photos of the school.", v: "Chúng mình sẽ gặp các thành viên của Câu lạc bộ Sống Xanh và chụp ảnh trường." },
+        { s: "Phong", e: "Fantastic! So don't forget to take your camera.", v: "Tuyệt vời! Vậy đừng quên mang theo máy ảnh nhé." },
+        { s: "Mi", e: "I almost forgot. Thanks for reminding me.", v: "Mình suýt quên. Cảm ơn đã nhắc mình." }
+    ];
+
+    // 2. DATA BÀI ĐỌC QUỐC HỌC HUẾ (FULL IMAGE 3)
+    const readingText = [
+        { e: "Quoc Hoc - Hue is one of the oldest schools in Viet Nam. It is on the bank of the Huong River, in Hue. It was founded in 1896.", v: "Quốc Học - Huế là một trong những ngôi trường lâu đời nhất Việt Nam. Nó nằm bên bờ sông Hương, ở Huế. Trường được thành lập năm 1896." },
+        { e: "It used to be a school for children from rich and royal families. Well-known people such as Ho Chi Minh, Vo Nguyen Giap, Xuan Dieu studied there.", v: "Trước đây, nó là trường dành cho con em các gia đình giàu có và hoàng tộc. Những người nổi tiếng như Hồ Chí Minh, Võ Nguyên Giáp, Xuân Diệu đã từng học ở đó." },
+        { e: "Nowadays, the school is for gifted students. They are intelligent and study hard. They have to pass an entrance exam to enter the school.", v: "Ngày nay, trường dành cho học sinh năng khiếu. Họ thông minh và chăm chỉ. Họ phải vượt qua kỳ thi đầu vào để vào trường." },
+        { e: "The school has over 50 classrooms with TVs, projectors, and computers. It also has a swimming pool, a library, two English labs, four computer rooms, and many other modern facilities.", v: "Trường có hơn 50 phòng học với TV, máy chiếu và máy tính. Nó cũng có hồ bơi, thư viện, hai phòng thí nghiệm tiếng Anh, bốn phòng máy tính và nhiều cơ sở vật chất hiện đại khác." },
+        { e: "The school is one of the largest and most beautiful schools in Viet Nam.", v: "Ngôi trường là một trong những trường lớn nhất và đẹp nhất Việt Nam." }
+    ];
+
+    // 3. QUIZ TAB 1 (GETTING STARTED)
+    const quiz1Data = [
+        { q: "1. What are they talking about?", opts: ["A. A visit to a computer room", "B. A visit to a school", "C. A visit to a school library"], ans: 1, expl: "Đáp án đúng là B vì Mi nói: 'I'm preparing to visit Binh Minh Lower Secondary School'." },
+        { q: "2. Who is going to visit the school?", opts: ["A. Mi and her teacher", "B. Mi and her classmates", "C. Mi, her teacher and her classmates"], ans: 2, expl: "Đáp án đúng là C. Mi nói: 'My teacher and my classmates'." },
+        { q: "3. Where is the school?", opts: ["A. In the city", "B. In the countryside", "C. In Phong's neighbourhood"], ans: 2, expl: "Đáp án đúng là C. Phong nói: '...one of the best schools in my neighbourhood'." },
+        { q: "4. When are they going?", opts: ["A. In the morning", "B. In the afternoon", "C. At noon"], ans: 1, expl: "Đáp án đúng là B. Mi nói: 'We're going in the afternoon'." }
+    ];
+
+    // 4. VOCAB MATCHING (IMAGE 5)
+    const matchData = [
+        { id: 1, a: "entrance", b: "examination", v: "kỳ thi đầu vào" },
+        { id: 2, a: "school", b: "facilities", v: "cơ sở vật chất" },
+        { id: 3, a: "outdoor", b: "activities", v: "hoạt động ngoài trời" },
+        { id: 4, a: "midterm", b: "test", v: "bài kiểm tra giữa kỳ" },
+        { id: 5, a: "gifted", b: "students", v: "học sinh năng khiếu" }
+    ];
+
+    // 5. VOCAB FILL IN BLANKS (IMAGE 5)
+    const vocabFillData = [
+        { q: "Binh Minh Lower Secondary School is for _____ in the city.", ans: "gifted students", expl: "Trường dành cho học sinh năng khiếu (gifted students)." },
+        { q: "Our _____ usually covers the first three units.", ans: "midterm test", expl: "Bài kiểm tra giữa kỳ (midterm test) thường bao gồm 3 bài đầu." },
+        { q: "Students in my school take part in many _____ during the school year.", ans: "outdoor activities", expl: "Tham gia các hoạt động ngoài trời (outdoor activities)." },
+        { q: "Our school has a lot of modern _____.", ans: "school facilities", expl: "Trường có nhiều cơ sở vật chất hiện đại (school facilities)." },
+        { q: "In order to study at Quoc Hoc - Hue, you have to pass an _____.", ans: "entrance examination", expl: "Phải vượt qua kỳ thi đầu vào (entrance examination)." }
+    ];
+
+    // 6. GRAMMAR PREPOSITIONS (IMAGE 4 & 6)
+    const grammarData = [
+        { q: "In England, schools usually start ____ 9 a.m.", opts: ["at", "in", "on"], ans: 0, expl: "Giờ giấc (9 a.m) dùng 'at'." },
+        { q: "They built our school a long time ago, maybe ____ 1990.", opts: ["at", "in", "on"], ans: 1, expl: "Năm (1990) dùng 'in'." },
+        { q: "The school year usually begins ____ September 5th.", opts: ["at", "in", "on"], ans: 2, expl: "Ngày cụ thể trong năm (Sept 5th) dùng 'on'." },
+        { q: "Tom's mother is at home, but she is not ____ the kitchen.", opts: ["at", "in", "on"], ans: 1, expl: "Trong phòng (kitchen) dùng 'in'." },
+        { q: "He has nothing to do but lying ____ the sofa.", opts: ["at", "in", "on"], ans: 2, expl: "Trên bề mặt ghế (sofa) dùng 'on'." },
+        { q: "The most beautiful posters are ____ the wall.", opts: ["at", "in", "on"], ans: 2, expl: "Trên tường dùng 'on'." }
+    ];
+
+    // 7. READING QUIZ (IMAGE 3 QUESTIONS)
+    const readingQuizData = [
+        { q: "1. Where is Quoc Hoc - Hue?", opts: ["A. In Ha Noi", "B. On the bank of Huong River", "C. In Ho Chi Minh City"], ans: 1, expl: "Bài đọc: 'It is on the bank of the Huong River'." },
+        { q: "2. Who were some of the well-known students?", opts: ["A. Rich people only", "B. Ho Chi Minh, Vo Nguyen Giap", "C. Foreign students"], ans: 1, expl: "Bài đọc liệt kê: Ho Chi Minh, Vo Nguyen Giap, Xuan Dieu." },
+        { q: "3. What are the students like?", opts: ["A. Intelligent and study hard", "B. Lazy", "C. Only from royal families"], ans: 0, expl: "Bài đọc: 'They are intelligent and study hard'." },
+        { q: "4. How many English labs does it have?", opts: ["A. One", "B. Two", "C. Three"], ans: 1, expl: "Bài đọc: '...two English labs...'." }
+    ];
+
+    /* --- LOGIC RENDER --- */
+
+    function init() {
+        renderText('dialogue-box', dialogue);
+        renderQuiz('quiz-tab1', quiz1Data);
+        renderMatching();
+        renderFillVocab();
+        renderQuiz('quiz-grammar', grammarData);
+        renderText('reading-box', readingText);
+        renderQuiz('quiz-reading', readingQuizData);
+    }
+
+    function renderText(id, data) {
+        const box = document.getElementById(id);
+        data.forEach(item => {
+            let html = `<div class="line">`;
+            if(item.s) html += `<span class="speaker">${item.s}: </span>`;
+            html += `<span>${item.e}</span><span class="vi-text">${item.v}</span></div>`;
+            box.innerHTML += html;
+        });
+    }
+
+    function renderQuiz(id, data) {
+        const box = document.getElementById(id);
+        data.forEach((item, idx) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'quiz-item';
+            
+            let optsHtml = item.opts.map((opt, i) => 
+                `<button class="opt-btn" onclick="checkQuiz(this, ${i}, ${item.ans}, 'expl-${id}-${idx}')">${opt}</button>`
+            ).join('');
+
+            qDiv.innerHTML = `
+                <div class="question">${item.q}</div>
+                <div class="options">${optsHtml}</div>
+                <div id="expl-${id}-${idx}" class="explanation">💡 ${item.expl}</div>
+            `;
+            box.appendChild(qDiv);
+        });
+    }
+
+    function checkQuiz(btn, choice, correct, explId) {
+        const parent = btn.parentElement;
+        const btns = parent.querySelectorAll('.opt-btn');
+        btns.forEach(b => b.disabled = true);
+        
+        if (choice === correct) {
+            btn.classList.add('correct');
+            playSound(true);
+        } else {
+            btn.classList.add('wrong');
+            btns[correct].classList.add('correct');
+            playSound(false);
+        }
+        document.getElementById(explId).style.display = 'block';
+    }
+
+    /* --- LOGIC MATCHING --- */
+    let selectedA = null;
+    
+    function renderMatching() {
+        const colA = document.getElementById('col-a');
+        const colB = document.getElementById('col-b');
+        
+        // Shuffle B
+        let dataB = [...matchData].sort(() => Math.random() - 0.5);
+
+        matchData.forEach(item => {
+            let card = createMatchCard(item.a, 'A', item.id);
+            colA.appendChild(card);
+        });
+
+        dataB.forEach(item => {
+            let card = createMatchCard(item.b, 'B', item.id);
+            colB.appendChild(card);
+        });
+    }
+
+    function createMatchCard(text, type, id) {
+        let d = document.createElement('div');
+        d.className = 'match-card';
+        d.textContent = text;
+        d.dataset.type = type;
+        d.dataset.id = id;
+        d.onclick = () => handleMatch(d);
+        return d;
+    }
+
+    function handleMatch(card) {
+        if (card.classList.contains('matched')) return;
+
+        if (card.dataset.type === 'A') {
+            if (selectedA) selectedA.classList.remove('selected');
+            selectedA = card;
+            card.classList.add('selected');
+        } else {
+            if (!selectedA) return;
+            if (selectedA.dataset.id === card.dataset.id) {
+                // Correct
+                selectedA.classList.add('matched');
+                card.classList.add('matched');
+                selectedA.classList.remove('selected');
+                selectedA = null;
+                playSound(true);
+            } else {
+                // Wrong
+                playSound(false);
+                card.style.borderColor = 'red';
+                setTimeout(() => card.style.borderColor = '#ccc', 500);
+            }
+        }
+    }
+
+    /* --- LOGIC FILL IN BLANKS --- */
+    function renderFillVocab() {
+        const box = document.getElementById('fill-vocab');
+        vocabFillData.forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.className = 'fill-item';
+            
+            // Tạo dropdown
+            let options = vocabFillData.map(v => `<option value="${v.ans}">${v.ans}</option>`).sort(() => Math.random() - 0.5);
+            let selectHtml = `<select class="blank-select" onchange="checkFill(this, '${item.ans}', 'expl-fill-${idx}')">
+                <option value="">...</option>
+                ${options.join('')}
+            </select>`;
+
+            div.innerHTML = `
+                <div>${idx + 1}. ${item.q.replace('_____', selectHtml)}</div>
+                <div id="expl-fill-${idx}" class="explanation">💡 ${item.expl}</div>
+            `;
+            box.appendChild(div);
+        });
+    }
+
+    function checkFill(select, ans, explId) {
+        if (select.value === ans) {
+            select.style.color = 'green';
+            select.disabled = true;
+            document.getElementById(explId).style.display = 'block';
+            playSound(true);
+        } else {
+            select.style.color = 'red';
+            playSound(false);
+        }
+    }
+
+    /* --- UTILS --- */
+    function switchTab(id) {
+        document.querySelectorAll('.tab-content').forEach(d => d.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    function toggleTrans(type) {
+        const selector = type === 'dialogue' ? '#dialogue-box .vi-text' : '#reading-box .vi-text';
+        document.querySelectorAll(selector).forEach(el => el.classList.toggle('show'));
+    }
+
+    // Audio context setup
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(isCorrect) {
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        if (isCorrect) {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
+        } else {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+            osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
+        }
+        
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+        osc.stop(audioCtx.currentTime + 0.3);
+    }
+
+    function toggleMusic() {
+        const aud = document.getElementById('bg-music');
+        const btn = document.querySelector('.music-btn');
+        if(aud.paused) { aud.play(); btn.classList.add('playing'); }
+        else { aud.pause(); btn.classList.remove('playing'); }
+    }
+
+    // Run
+    init();
+
+</script>
+</body>
+</html>
